@@ -1,9 +1,6 @@
 package com.company;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class SQLConnection {
     String URL = "jdbc:mysql://localhost/finalProject";
@@ -26,5 +23,16 @@ public class SQLConnection {
             result=false;
         }
         return result;
+    }
+
+    public ResultSet SQLLoad(String SQlCmd) throws SQLException {
+
+        ResultSet rs = null;
+
+            Statement s = con.prepareStatement(SQlCmd);
+            rs = s.executeQuery(SQlCmd);
+
+
+        return rs;
     }
 }

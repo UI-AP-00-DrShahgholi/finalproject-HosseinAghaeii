@@ -1,6 +1,8 @@
 package com.company;
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class SabtAhval {
@@ -11,7 +13,7 @@ public class SabtAhval {
     public SabtAhval() throws Exception {
     }
 
-    public void menu()  {
+    public void menu() throws SQLException {
         System.out.println("What do you want to do Boss?");
         System.out.println("1.Register user");
         System.out.println("2.Editing information");
@@ -48,17 +50,73 @@ public class SabtAhval {
 
     }
 
-    private void editInformation()  {
+    private void editInformation() throws SQLException {
+        boolean  check=false;
         System.out.println("which user information do you want to edit?inter national code:");
         String newNCode=input.next();
+        ResultSet rs= sqlConnection.SQLLoad("SELECT nationalCode FROM User");
+        while (rs.next()){
+            if (rs.getString("nationalCode").equals(newNCode)){
+                check=true;
+                break;
+            }
+        }
+        if (check){
+            System.out.println("Which filed do you want edit? ");
+            System.out.println("1.name\n2.age\n3.gender\n4.wallet mount");
+            int chooser=input.nextInt();
+            switch (chooser){
+                case 1: editName(newNCode);
+                break;
+                case 2: editAge(newNCode);
+                break;
+                case 3:editGender(newNCode);
+                break;
+                case 4:editWalletMount(newNCode);
+            }
 
 
-
+        }else System.out.println("Wrong nationalCode :(");
 
 
     }
 
     private void removeInformation(){
 
+    }
+
+    private void editName(String nationalCode){
+        System.out.println("inter new name:");
+        String newName=input.next();
+        String SQLCmd=String.format("UPDATE User SET name = '%s' WHERE nationalCode = '%s'",newName,nationalCode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+    private void editAge (String nationalCode){
+        System.out.println("inter new age:");
+        int newAge=input.nextInt();
+        String SQLCmd=String.format("UPDATE User SET age = '%d' WHERE nationalCode = '%s'",newAge,nationalCode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+    private void editGender(String nationalCode){
+        System.out.println("select gender:\t1.male\t2.female");
+        int chooser=input.nextInt();
+        String newGender;
+        if (chooser==1) newGender="MALE";
+        else newGender="FEMALE";
+        String SQLCmd=String.format("UPDATE User SET gender = '%s' WHERE nationalCode = '%s'",newGender,nationalCode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+    private void editWalletMount(String nationalCode){
+        System.out.println("inter new wallet mount:");
+        int newWM=input.nextInt();
+        String SQLCmd=String.format("UPDATE User SET walletMount = '%d' WHERE nationalCode = '%s'",newWM,nationalCode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
     }
 }
