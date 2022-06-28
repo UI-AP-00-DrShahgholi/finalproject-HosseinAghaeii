@@ -7,10 +7,9 @@ public class Estate {
     private String buyDate;
     private int  Value;
 
-    public Estate(String SACode, String ownerNCode, String address, String buyDate, int value) {
+    public Estate(String SACode, String ownerNCode, String buyDate, int value) {
         this.SACode = SACode;
         this.ownerNCode = ownerNCode;
-        this.address = address;
         this.buyDate = buyDate;
         Value = value;
     }

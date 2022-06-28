@@ -17,10 +17,10 @@ public class SQLConnection {
         try {
             Statement s = con.prepareStatement(SQlCmd);
             s.execute(SQlCmd);
-            result=true;
+            result = true;
 
         } catch (Exception ex) {
-            result=false;
+            result = false;
         }
         return result;
     }
@@ -28,11 +28,20 @@ public class SQLConnection {
     public ResultSet SQLLoad(String SQlCmd) throws SQLException {
 
         ResultSet rs = null;
-
-            Statement s = con.prepareStatement(SQlCmd);
-            rs = s.executeQuery(SQlCmd);
-
-
+        Statement s = con.prepareStatement(SQlCmd);
+        rs = s.executeQuery(SQlCmd);
         return rs;
+    }
+
+    public boolean checkNCode(String nationalCode) throws SQLException {
+        boolean check=false;
+        ResultSet rs= SQLLoad("SELECT nationalCode FROM User");
+        while (rs.next()){
+            if (rs.getString("nationalCode").equals(nationalCode)){
+                check=true;
+                break;
+            }
+        }
+        return check;
     }
 }

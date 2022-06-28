@@ -55,7 +55,7 @@ public class SabtAhval {
         System.out.println("which user information do you want to edit?inter national code:");
         String newNCode=input.next();
 
-        if (checkNCode(newNCode)){
+        if (sqlConnection.checkNCode(newNCode)){
             System.out.println("Which filed do you want edit? ");
             System.out.println("1.name\n2.age\n3.gender\n4.wallet mount");
             int chooser=input.nextInt();
@@ -78,7 +78,7 @@ public class SabtAhval {
     private void removeInformation() throws SQLException {
         System.out.println("Which user do you want to delete? inter national code:");
         String nCode=input.next();
-        if (checkNCode(nCode)){
+        if (sqlConnection.checkNCode(nCode)){
             String SQLCmd=String.format("DELETE FROM User WHERE nationalCode = '%s'",nCode);
             sqlConnection.executeSQL(SQLCmd);
         }else System.out.println("ERROR! wrong national code");
@@ -121,15 +121,5 @@ public class SabtAhval {
         System.out.println("edit completed");
     }
 
-    private boolean checkNCode(String nationalCode) throws SQLException {
-        boolean check=false;
-        ResultSet rs= sqlConnection.SQLLoad("SELECT nationalCode FROM User");
-        while (rs.next()){
-            if (rs.getString("nationalCode").equals(nationalCode)){
-                check=true;
-                break;
-            }
-        }
-        return check;
-    }
+
 }
