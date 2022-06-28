@@ -51,17 +51,11 @@ public class SabtAhval {
     }
 
     private void editInformation() throws SQLException {
-        boolean  check=false;
+
         System.out.println("which user information do you want to edit?inter national code:");
         String newNCode=input.next();
-        ResultSet rs= sqlConnection.SQLLoad("SELECT nationalCode FROM User");
-        while (rs.next()){
-            if (rs.getString("nationalCode").equals(newNCode)){
-                check=true;
-                break;
-            }
-        }
-        if (check){
+
+        if (checkNCode(newNCode)){
             System.out.println("Which filed do you want edit? ");
             System.out.println("1.name\n2.age\n3.gender\n4.wallet mount");
             int chooser=input.nextInt();
@@ -81,7 +75,14 @@ public class SabtAhval {
 
     }
 
-    private void removeInformation(){
+    private void removeInformation() throws SQLException {
+        System.out.println("Which user do you want to delete? inter national code:");
+        String nCode=input.next();
+        if (checkNCode(nCode)){
+            String SQLCmd=String.format("DELETE FROM User WHERE nationalCode = '%s'",nCode);
+            sqlConnection.executeSQL(SQLCmd);
+        }else System.out.println("ERROR! wrong national code");
+
 
     }
 
@@ -118,5 +119,17 @@ public class SabtAhval {
         String SQLCmd=String.format("UPDATE User SET walletMount = '%d' WHERE nationalCode = '%s'",newWM,nationalCode);
         sqlConnection.executeSQL(SQLCmd);
         System.out.println("edit completed");
+    }
+
+    private boolean checkNCode(String nationalCode) throws SQLException {
+        boolean check=false;
+        ResultSet rs= sqlConnection.SQLLoad("SELECT nationalCode FROM User");
+        while (rs.next()){
+            if (rs.getString("nationalCode").equals(nationalCode)){
+                check=true;
+                break;
+            }
+        }
+        return check;
     }
 }
