@@ -12,11 +12,11 @@ public class User {
         FEMALE
     }
 
-    public User(String name, String nationalCode, int age, User.gender gender) {
+    public User(String name, String nationalCode, int age, int wallet) {
         this.name = name;
         NationalCode = nationalCode;
         this.age = age;
-        this.gender = gender;
+        this.wallet = wallet;
 
     }
 
@@ -36,8 +36,7 @@ public class User {
         this.gender = gender;
     }
 
-    public void setWall
-    et(int wallet) {
+    public void setWallet(int wallet) {
         this.wallet = wallet;
     }
 
