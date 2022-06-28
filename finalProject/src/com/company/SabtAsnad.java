@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class SabtAsnad {
     Scanner input = new Scanner(System.in);
     SQLConnection sqlConnection = new SQLConnection();
+    private String nationalCode;
 
     public SabtAsnad() throws Exception {
     }
@@ -17,6 +18,7 @@ public class SabtAsnad {
         if (sqlConnection.checkNCode(NCode)) {
             String name = findName(NCode);
             System.out.println("Welcome dear " + name + ":)");
+            nationalCode=NCode;
             menu();
         } else System.out.println("we not have person with this national code");
     }
@@ -41,8 +43,8 @@ public class SabtAsnad {
 
     private void register() {
         System.out.println("please inter information we want:");
-        System.out.println("Document registration code , owner national code , date of buy , value");
-        Estate estate = new Estate(input.next(), input.next(), input.next(), input.nextInt());
+        System.out.println("Document registration code  , date of buy , value");
+        Estate estate = new Estate(input.next(),nationalCode, input.next(), input.nextInt());
         System.out.println("write address:");
         input.nextLine();
         String address = input.nextLine();
