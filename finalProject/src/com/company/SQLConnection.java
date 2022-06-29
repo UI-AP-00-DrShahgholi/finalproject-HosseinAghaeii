@@ -44,4 +44,16 @@ public class SQLConnection {
         }
         return check;
     }
+
+    public boolean checkNCodeAndSACode(String nationalCode,String SACode) throws SQLException{
+        boolean check=false;
+        ResultSet rs=SQLLoad("SELECT ownerNCode , SACode FROM Estate ");
+        while (rs.next()){
+            if (rs.getString("ownerNCode").equals(nationalCode) && rs.getString("SACode").equals(SACode)){
+                check=true;
+                break;
+            }
+        }
+        return check;
+    }
 }

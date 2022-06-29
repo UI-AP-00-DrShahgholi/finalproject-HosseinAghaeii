@@ -23,7 +23,7 @@ public class SabtAsnad {
         } else System.out.println("we not have person with this national code");
     }
 
-    private void menu() {
+    private void menu() throws SQLException {
         System.out.println("What do you want to do?");
         System.out.println("1.Register estate");
         System.out.println("2.Edit information of estates");
@@ -57,7 +57,28 @@ public class SabtAsnad {
 
     }
 
-    private void edit() {
+    private void edit() throws SQLException {
+        System.out.println("which estate information do you want to edit?inter national code and Document registration code:");
+        String newNCode=input.next();
+        String newSACode=input.next();
+
+        if (sqlConnection.checkNCodeAndSACode(newNCode,newSACode)){
+            System.out.println("Which filed do you want edit? ");
+            System.out.println("1.Document registration code\n2.address\n3.date of buy\n4.value");
+            int chooser=input.nextInt();
+            switch (chooser){
+                case 1: editSACode(newNCode,newSACode);
+                    break;
+                case 2: editAddress(newNCode,newSACode);
+                    break;
+                case 3: editBuyDate(newNCode,newSACode);
+                    break;
+                case 4: editValue(newNCode,newSACode);
+            }
+
+
+        }else System.out.println("Wrong nationalCode or Document registration code  :(");
+
 
     }
 
@@ -74,4 +95,39 @@ public class SabtAsnad {
         }
         return name;
     }
+
+    private void editSACode(String nationalCode,String SACode){
+        System.out.println("inter new Document registration code:");
+        String newSACode=input.next();
+        String SQLCmd=String.format("UPDATE Estate SET SACode = '%s' WHERE ownerNCode = '%s' AND SACode = '%s'",newSACode,nationalCode,SACode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+    private void editAddress(String nationalCode,String SACode){
+        System.out.println("inter new address:");
+        input.nextLine();
+        String newAddress=input.nextLine();
+        String SQLCmd=String.format("UPDATE Estate SET address = '%s' WHERE ownerNCode = '%s' AND SACode = '%s'",newAddress,nationalCode,SACode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+    private void editBuyDate(String nationalCode,String SACode){
+        System.out.println("inter new date of buy (yy-mm-dd):");
+        String newBuyDate=input.next();
+        String SQLCmd=String.format("UPDATE Estate SET buyDate = '%s' WHERE ownerNCode = '%s' AND SACode = '%s'",newBuyDate,nationalCode,SACode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+    private void editValue(String nationalCode,String SACode){
+        System.out.println("inter new value:");
+        int newValue=input.nextInt();
+        String SQLCmd=String.format("UPDATE Estate SET value = %d WHERE ownerNCode = '%s' AND SACode = '%s'",newValue,nationalCode,SACode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("edit completed");
+    }
+
+
 }
