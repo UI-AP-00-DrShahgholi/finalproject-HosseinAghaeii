@@ -3,6 +3,7 @@ package com.company;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class SabtAsnad implements Login{
     Scanner input = new Scanner(System.in);
@@ -24,7 +25,7 @@ public class SabtAsnad implements Login{
         } else System.out.println("we not have person with this national code");
     }
 
-    private void menu() throws SQLException {
+    private void menu() throws Exception {
         System.out.println("What do you want to do?");
         System.out.println("1.Register estate");
         System.out.println("2.Edit information of estates");
@@ -84,15 +85,47 @@ public class SabtAsnad implements Login{
 
     }
 
-    private void delete() throws SQLException {
+    private void delete() throws Exception {
         System.out.println("Which estate do you want to delete? inter national code and Document registration code:");
         String nCode=input.next();
         String SACode=input.next();
         if (sqlConnection.checkNCodeAndSACode(nCode,SACode)){
+            updateWalletMount(nCode,SACode);
             String SQLCmd=String.format("DELETE FROM Estate WHERE ownerNCode = '%s' AND SACode = '%s'",nCode,SACode);
             sqlConnection.executeSQL(SQLCmd);
             System.out.println("this estate was delete");
         }else System.out.println("ERROR! wrong national code or Document registration code  :(");
+
+    }
+
+    private int getValue(String SACode) throws SQLException {
+        int value=0;
+        String SQLCmd=String.format("SELECT value FROM Estate WHERE SACode = %s  ",SACode );
+        ResultSet rs=sqlConnection.SQLLoad(SQLCmd);
+        while (rs.next()){
+            value=rs.getInt("value");
+        }
+        return value;
+    }
+
+    private int getWallet(String nCode) throws Exception{
+        int wallet=0;
+        String SQLCmd=String.format("SELECT walletMount FROM User WHERE nationalCode = %s  ",nCode );
+        ResultSet rs=sqlConnection.SQLLoad(SQLCmd);
+        while (rs.next()){
+            wallet=rs.getInt("walletMount");
+        }
+        return wallet;
+
+    }
+
+    private void updateWalletMount(String nCode,String SACode) throws Exception {
+        int value=getValue(SACode);
+        int wallet=getWallet(nCode);
+        int newWallet=wallet+value;
+        String SQLCmd=String.format("UPDATE User SET walletMount = %d WHERE nationalCode='%s'",newWallet,nCode);
+        sqlConnection.executeSQL(SQLCmd);
+        System.out.println("value of this estate added to your wallet");
 
     }
 
