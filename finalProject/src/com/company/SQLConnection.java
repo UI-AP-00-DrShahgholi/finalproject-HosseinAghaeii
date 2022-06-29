@@ -56,4 +56,14 @@ public class SQLConnection {
         }
         return check;
     }
+
+    public String findName(String NCode) throws SQLException {
+        String name="";
+        String SQlCmd = String.format("SELECT name FROM User WHERE nationalCode = %s", NCode);
+        ResultSet rs = SQLLoad(SQlCmd);
+        while (rs.next()) {
+            name = rs.getString("name");
+        }
+        return name;
+    }
 }

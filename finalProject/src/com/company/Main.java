@@ -11,7 +11,7 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
         SabtAhval sabtAhval = new SabtAhval();
-        SabtAsnad sabtAsnad = new SabtAsnad();
+
         int continueChooser;
         System.out.println("Welcome");
         do {
@@ -22,11 +22,27 @@ public class Main {
                     sabtAhval.menu();
                     break;
                 case 2:
-                    sabtAsnad.login();
+                    userMenu();
             }
             System.out.println("Do you want Resume?\t1.yes\t2.no");
              continueChooser = input.nextInt();
 
         } while (continueChooser==1);
+    }
+
+    public static void userMenu() throws Exception {
+        SabtAsnad sabtAsnad = new SabtAsnad();
+        BankSystem bankSystem=new BankSystem();
+        Scanner input=new Scanner(System.in);
+        System.out.println("Which system do you want to log in to?");
+        System.out.println("1.Sabt Asnad system");
+        System.out.println("2.Bank system");
+        int chooser=input.nextInt();
+        switch (chooser){
+            case 1: sabtAsnad.login();
+            break;
+            case 2: bankSystem.login();
+
+        }
     }
 }

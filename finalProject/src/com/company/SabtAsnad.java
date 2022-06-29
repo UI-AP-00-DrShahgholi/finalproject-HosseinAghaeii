@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class SabtAsnad {
+public class SabtAsnad implements Login{
     Scanner input = new Scanner(System.in);
     SQLConnection sqlConnection = new SQLConnection();
     private String nationalCode;
@@ -12,11 +12,12 @@ public class SabtAsnad {
     public SabtAsnad() throws Exception {
     }
 
-    public void login() throws SQLException {
+     @Override
+    public void login() throws Exception{
         System.out.println("inter your national code:");
         String NCode = input.next();
         if (sqlConnection.checkNCode(NCode)) {
-            String name = findName(NCode);
+            String name = sqlConnection.findName(NCode);
             System.out.println("Welcome dear " + name + ":)");
             nationalCode=NCode;
             menu();
@@ -49,7 +50,7 @@ public class SabtAsnad {
         input.nextLine();
         String address = input.nextLine();
         estate.setAddress(address);
-        System.out.println(estate.getSACode()+ " " + estate.getOwnerNCode()+ " " +estate.getAddress()+ " " +estate.getBuyDate()+" "+ estate.getValue());
+
         String SQLCmd = String.format("INSERT INTO Estate (SACode,ownerNCode,address,buyDate,value) VALUES ('%s','%s','%s','%s',%d)",
                 estate.getSACode(), estate.getOwnerNCode(), estate.getAddress(), estate.getBuyDate(), estate.getValue());
         if (sqlConnection.executeSQL(SQLCmd)) {
@@ -95,15 +96,7 @@ public class SabtAsnad {
 
     }
 
-    private String findName(String NCode) throws SQLException {
-        String name="";
-        String SQlCmd = String.format("SELECT name FROM User WHERE nationalCode = %s", NCode);
-        ResultSet rs = sqlConnection.SQLLoad(SQlCmd);
-        while (rs.next()) {
-             name = rs.getString("name");
-        }
-        return name;
-    }
+
 
     private void editSACode(String nationalCode,String SACode){
         System.out.println("inter new Document registration code:");
