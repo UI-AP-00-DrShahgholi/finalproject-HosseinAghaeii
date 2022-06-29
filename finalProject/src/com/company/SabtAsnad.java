@@ -49,6 +49,7 @@ public class SabtAsnad {
         input.nextLine();
         String address = input.nextLine();
         estate.setAddress(address);
+        System.out.println(estate.getSACode()+ " " + estate.getOwnerNCode()+ " " +estate.getAddress()+ " " +estate.getBuyDate()+" "+ estate.getValue());
         String SQLCmd = String.format("INSERT INTO Estate (SACode,ownerNCode,address,buyDate,value) VALUES ('%s','%s','%s','%s',%d)",
                 estate.getSACode(), estate.getOwnerNCode(), estate.getAddress(), estate.getBuyDate(), estate.getValue());
         if (sqlConnection.executeSQL(SQLCmd)) {
@@ -82,7 +83,15 @@ public class SabtAsnad {
 
     }
 
-    private void delete() {
+    private void delete() throws SQLException {
+        System.out.println("Which estate do you want to delete? inter national code and Document registration code:");
+        String nCode=input.next();
+        String SACode=input.next();
+        if (sqlConnection.checkNCodeAndSACode(nCode,SACode)){
+            String SQLCmd=String.format("DELETE FROM Estate WHERE ownerNCode = '%s' AND SACode = '%s'",nCode,SACode);
+            sqlConnection.executeSQL(SQLCmd);
+            System.out.println("this estate was delete");
+        }else System.out.println("ERROR! wrong national code or Document registration code  :(");
 
     }
 

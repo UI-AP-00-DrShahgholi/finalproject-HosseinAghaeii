@@ -81,6 +81,7 @@ public class SabtAhval {
         if (sqlConnection.checkNCode(nCode)){
             String SQLCmd=String.format("DELETE FROM User WHERE nationalCode = '%s'",nCode);
             sqlConnection.executeSQL(SQLCmd);
+            System.out.println("this person was delete");
         }else System.out.println("ERROR! wrong national code");
 
 
