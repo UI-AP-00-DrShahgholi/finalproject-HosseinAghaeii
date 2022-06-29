@@ -1,30 +1,27 @@
 package com.company;
 
+import java.util.Date;
+
 public class CurrentBankAccount extends BankAccount{
-    private boolean checkbook;
-    private boolean bankCard;
-    private long cardNumber;
+    private int  checkbook=1;
+    private int bankCard=1;
+    private String cardNumber;
 
 
-    public CurrentBankAccount(long accountNumber, String ownerNCode, int balance, String buildDate, int negativePoint,boolean checkbook,boolean bankCard) {
-        super(accountNumber, ownerNCode, balance, buildDate, negativePoint);
-        this.checkbook=checkbook;
-        this.bankCard=bankCard;
+    public CurrentBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate, String cardNumber) {
+        super(accountNumber, ownerNCode, balance, buildDate);
+       this.cardNumber=cardNumber;
     }
 
-    public boolean isCheckbook() {
+    public int getCheckbook() {
         return checkbook;
     }
 
-    public boolean isBankCard() {
+    public int getBankCard() {
         return bankCard;
     }
 
-    public void setCheckbook(boolean checkbook) {
-        this.checkbook = checkbook;
-    }
-
-    public void setBankCard(boolean bankCard) {
-        this.bankCard = bankCard;
+    public String getCardNumber() {
+        return cardNumber;
     }
 }

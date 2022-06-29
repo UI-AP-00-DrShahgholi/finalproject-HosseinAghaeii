@@ -1,11 +1,13 @@
 package com.company;
 
+import java.util.Date;
+
 public class GhHBankAccount extends BankAccount{
     private boolean bankCard;
     private long cardNumber;
 
-    public GhHBankAccount(long accountNumber, String ownerNCode, int balance, String buildDate, int negativePoint) {
-        super(accountNumber, ownerNCode, balance, buildDate, negativePoint);
+    public GhHBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate, int negativePoint) {
+        super(accountNumber, ownerNCode, balance, buildDate);
     }
 
     public void setBankCard(boolean bankCard) {

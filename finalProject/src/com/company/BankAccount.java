@@ -1,21 +1,23 @@
 package com.company;
 
+import java.util.Date;
+
 public class BankAccount {
-    private long accountNumber;
+    private String accountNumber;
     private String ownerNCode; // owner national code
     private int balance;
     private String buildDate;
-    private int negativePoint;
+    private int negativePoint=0;
 
-    public BankAccount(long accountNumber, String ownerNCode, int balance, String buildDate, int negativePoint) {
+    public BankAccount(String accountNumber, String ownerNCode, int balance, String buildDate) {
         this.accountNumber = accountNumber;
         this.ownerNCode = ownerNCode;
         this.balance = balance;
         this.buildDate = buildDate;
-        this.negativePoint = negativePoint;
+
     }
 
-    public void setAccountNumber(long accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
@@ -35,7 +37,7 @@ public class BankAccount {
         this.negativePoint = negativePoint;
     }
 
-    public long getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 

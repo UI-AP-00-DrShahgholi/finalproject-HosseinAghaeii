@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Date;
+
 public class SavingBankAccount extends BankAccount{
     private int bankInterest;
     private type type;
@@ -7,8 +9,8 @@ public class SavingBankAccount extends BankAccount{
 
 
 
-    public SavingBankAccount(long accountNumber, String ownerNCode, int balance, String buildDate, int negativePoint,type type) {
-        super(accountNumber, ownerNCode, balance, buildDate, negativePoint);
+    public SavingBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate, type type) {
+        super(accountNumber, ownerNCode, balance, buildDate);
         this.type=type;
         setInterestAndPeriod();
     }

@@ -15,6 +15,7 @@ public class Main {
         int continueChooser;
         System.out.println("Welcome");
         do {
+
             System.out.println("who are you?1.Admin\t2.User");
             int chooser = input.nextInt();
             switch (chooser) {
