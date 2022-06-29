@@ -2,27 +2,28 @@ package com.company;
 
 import java.util.Date;
 
-public class GhHBankAccount extends BankAccount{
-    private boolean bankCard;
-    private long cardNumber;
+public class GhHBankAccount extends BankAccount {
+    private int bankCard = 1;
+    private String cardNumber;
 
-    public GhHBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate, int negativePoint) {
+    public GhHBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate,String cardNumber) {
         super(accountNumber, ownerNCode, balance, buildDate);
+        this.cardNumber=cardNumber;
     }
 
-    public void setBankCard(boolean bankCard) {
-        this.bankCard = bankCard;
-    }
-
-    public void setCardNumber(long cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public boolean isBankCard() {
+    public int getBankCard() {
         return bankCard;
     }
 
-    public long getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
+    }
+
+    public void setBankCard(int bankCard) {
+        this.bankCard = bankCard;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 }

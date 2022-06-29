@@ -91,6 +91,19 @@ public class BankSystem implements Login {
     }
 
     private void createGHAccount(){
+        System.out.println("inter information we want:");
+        System.out.println("account number, balance, card number,build date");
+        System.out.println("notice! account number and card number must be unique");
+        String ANumber=input.next();
+        int balance =input.nextInt();
+        String cardNumber=input.next();
+        String buildDate=input.next();
+        GhHBankAccount ghHBankAccount=new GhHBankAccount(ANumber,nationalCode,balance,buildDate,cardNumber);
+        String SQlCmd=String.format("INSERT INTO GHAccount (ANumber,ownerNCode,balance,buildDate,NPoint,bankCard,cardNumber) VALUE ('%s','%s',%d,'%s',%d,%d,'%s')",
+                ghHBankAccount.getAccountNumber(),ghHBankAccount.getOwnerNCode(),ghHBankAccount.getBalance(),ghHBankAccount.getBuildDate(),ghHBankAccount.getNegativePoint(),ghHBankAccount.getBankCard(),ghHBankAccount.getCardNumber());
+        if (sqlConnection.executeSQL(SQlCmd)){
+            System.out.println("your gharzolhasane account created");
+        }else System.out.println("ERROR!");
 
     }
 
