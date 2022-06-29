@@ -108,7 +108,33 @@ public class BankSystem implements Login {
     }
 
     private void createSAccount(){
+        System.out.println("inter information we want:");
+        System.out.println("account number, balance, build date");
+        System.out.println("notice! account number and card number must be unique");
+        String ANumber=input.next();
+        int balance =input.nextInt();
 
+        String buildDate=input.next();
+        System.out.println("inter type of saving account:");
+        System.out.println("1.SPECIAL");
+        System.out.println("2.short term");
+        System.out.println("3.long term");
+        SavingBankAccount savingBankAccount=new SavingBankAccount(ANumber,nationalCode,balance,buildDate);
+        int chooser=input.nextInt();
+        switch (chooser){
+            case 1: savingBankAccount.setType(SavingBankAccount.type.SPECIAL);
+            break;
+            case  2: savingBankAccount.setType(SavingBankAccount.type.SHORT_TERM);
+            break;
+            case 3: savingBankAccount.setType(SavingBankAccount.type.LONG_TERM);
+            break;
+        }
+        savingBankAccount.setInterestAndPeriod();
+        String SQlCmd=String.format("INSERT INTO SAccount (ANumber,ownerNCode,balance,buildDate,NPoint,type,bankInterest,period) VALUE ('%s','%s',%d,'%s',%d,'%s',%d,%d)",
+                savingBankAccount.getAccountNumber(),savingBankAccount.getOwnerNCode(),savingBankAccount.getBalance(),savingBankAccount.getBuildDate(),savingBankAccount.getNegativePoint(),savingBankAccount.getType(),savingBankAccount.getBankInterest(),savingBankAccount.getPeriod());
+        if (sqlConnection.executeSQL(SQlCmd)){
+            System.out.println("your saving account created");
+        }else System.out.println("ERROR!");
     }
 
     private void pushMoney() {

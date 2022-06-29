@@ -9,21 +9,21 @@ public class SavingBankAccount extends BankAccount{
 
 
 
-    public SavingBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate, type type) {
+    public SavingBankAccount(String accountNumber, String ownerNCode, int balance, String buildDate) {
         super(accountNumber, ownerNCode, balance, buildDate);
-        this.type=type;
-        setInterestAndPeriod();
+
+
     }
 
 
 
-    private enum type{
+    public enum type{
         SPECIAL,
         SHORT_TERM,
         LONG_TERM
     }
 
-    void setInterestAndPeriod(){
+   public void setInterestAndPeriod(){
         if (type == type.SPECIAL){
             bankInterest=50;
             period=50;
