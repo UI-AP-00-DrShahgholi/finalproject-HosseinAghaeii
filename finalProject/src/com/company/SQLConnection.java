@@ -89,6 +89,8 @@ public class SQLConnection {
         }
         return check;
     }
+//--------------------------------------------------------------------------------------------------------------------
+
 
     public String findName(String NCode) throws SQLException {
         String name="";
@@ -125,4 +127,27 @@ public class SQLConnection {
         }
         return balance;
     }
+
+    int getWallet(String nCode) throws Exception{
+        int wallet=0;
+        String SQLCmd=String.format("SELECT walletMount FROM User WHERE nationalCode = %s  ",nCode );
+        ResultSet rs=SQLLoad(SQLCmd);
+        while (rs.next()){
+            wallet=rs.getInt("walletMount");
+        }
+        return wallet;
+
+    }
+
+    int getValue(String SACode) throws SQLException {
+        int value=0;
+        String SQLCmd=String.format("SELECT value FROM Estate WHERE SACode = %s  ",SACode );
+        ResultSet rs=SQLLoad(SQLCmd);
+        while (rs.next()){
+            value=rs.getInt("value");
+        }
+        return value;
+    }
+
+
 }

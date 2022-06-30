@@ -98,30 +98,13 @@ public class SabtAsnad implements Login{
 
     }
 
-    private int getValue(String SACode) throws SQLException {
-        int value=0;
-        String SQLCmd=String.format("SELECT value FROM Estate WHERE SACode = %s  ",SACode );
-        ResultSet rs=sqlConnection.SQLLoad(SQLCmd);
-        while (rs.next()){
-            value=rs.getInt("value");
-        }
-        return value;
-    }
 
-    private int getWallet(String nCode) throws Exception{
-        int wallet=0;
-        String SQLCmd=String.format("SELECT walletMount FROM User WHERE nationalCode = %s  ",nCode );
-        ResultSet rs=sqlConnection.SQLLoad(SQLCmd);
-        while (rs.next()){
-            wallet=rs.getInt("walletMount");
-        }
-        return wallet;
 
-    }
+
 
     private void updateWalletMount(String nCode,String SACode) throws Exception {
-        int value=getValue(SACode);
-        int wallet=getWallet(nCode);
+        int value=sqlConnection.getValue(SACode);
+        int wallet=sqlConnection.getWallet(nCode);
         int newWallet=wallet+value;
         String SQLCmd=String.format("UPDATE User SET walletMount = %d WHERE nationalCode='%s'",newWallet,nCode);
         sqlConnection.executeSQL(SQLCmd);
