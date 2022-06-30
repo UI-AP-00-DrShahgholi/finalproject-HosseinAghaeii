@@ -138,8 +138,13 @@ public class BankSystem implements Login {
             case 2:
                 createGHAccount();
                 break;
-            case 3:
-                createSAccount();
+            case 3: {
+                try {
+                    createSAccount();
+                } catch (TypeInvalidException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
         }
 
     }
@@ -177,7 +182,7 @@ public class BankSystem implements Login {
 
     }
 
-    private void createSAccount() {
+    private void createSAccount() throws TypeInvalidException {
         System.out.println("inter information we want:");
         System.out.println("account number, balance, build date");
         System.out.println("notice! account number and card number must be unique");
@@ -189,8 +194,14 @@ public class BankSystem implements Login {
         System.out.println("1.SPECIAL");
         System.out.println("2.short term");
         System.out.println("3.long term");
-        SavingBankAccount savingBankAccount = new SavingBankAccount(ANumber, nationalCode, balance, buildDate);
         int chooser = input.nextInt();
+
+        if (chooser<1 || chooser >3){
+            throw new TypeInvalidException();
+        }
+
+
+        SavingBankAccount savingBankAccount = new SavingBankAccount(ANumber, nationalCode, balance, buildDate);
         switch (chooser) {
             case 1:
                 savingBankAccount.setType(SavingBankAccount.type.SPECIAL);
