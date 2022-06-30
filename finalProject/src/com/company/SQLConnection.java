@@ -33,6 +33,8 @@ public class SQLConnection {
         return rs;
     }
 
+    //------------------------------------------------------------------------------
+
     public boolean checkNCode(String nationalCode) throws SQLException {
         boolean check=false;
         ResultSet rs= SQLLoad("SELECT nationalCode FROM User");

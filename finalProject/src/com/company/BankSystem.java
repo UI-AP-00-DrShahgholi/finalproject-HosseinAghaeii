@@ -1,5 +1,6 @@
 package com.company;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
@@ -8,6 +9,7 @@ public class BankSystem implements Login {
     Scanner input = new Scanner(System.in);
     SQLConnection sqlConnection = new SQLConnection();
     private String nationalCode;
+    private int type;
 
     public BankSystem() throws Exception {
     }
@@ -20,8 +22,24 @@ public class BankSystem implements Login {
             String name = sqlConnection.findName(NCode);
             System.out.println("Welcome dear " + name + ":)");
             nationalCode = NCode;
-            menu();
+            chooseTypeOfAccount();
         } else System.out.println("we not have person with this national code");
+    }
+
+    private void chooseTypeOfAccount() throws Exception {
+        System.out.println("inter type of account:");
+        System.out.println("1.current account");
+        System.out.println("2.GHARZOLHASANE account");
+        System.out.println("3.saving account");
+        System.out.println("this item for users that have account,if you want to create account press 0 ");
+        int choose = input.nextInt();
+        if (choose==0) createAccount();
+        else {
+            if (choose >= 1 && choose <= 3) {
+                type = choose;
+                menu();
+            } else System.out.println("Error");
+        }
     }
 
     private void menu() throws Exception {
@@ -143,20 +161,17 @@ public class BankSystem implements Login {
             System.out.println("your saving account created");
         } else System.out.println("ERROR!");
     }
+    //----------------------------------------------------------------------------------------------
 
     private void pushMoney() throws SQLException {
-        System.out.println("inter type of account:");
-        System.out.println("1.current account");
-        System.out.println("2.GHARZOLHASANE account");
-        System.out.println("3.saving account");
-        int choose = input.nextInt();
+
         System.out.println("inter your account number:");
         String ANumber = input.next();
-        if (sqlConnection.checkANumber(ANumber, choose)) {
+        if (sqlConnection.checkANumber(ANumber, type)) {
             System.out.println("How much money do you want to deposit?");
             int money = input.nextInt();
 
-            switch (choose) {
+            switch (type) {
                 case 1:
                     pushMoneyForCA(ANumber, money);
                     break;
@@ -195,20 +210,17 @@ public class BankSystem implements Login {
             System.out.println("push money is complete");
         } else System.out.println("ERROR : push money is not complete");
     }
+    //------------------------------------------------------------------------------------------------
 
     private void popMoney() throws Exception {
-        System.out.println("inter type of account:");
-        System.out.println("1.current account");
-        System.out.println("2.GHARZOLHASANE account");
-        System.out.println("3.saving account");
-        int choose = input.nextInt();
+
         System.out.println("inter your account number:");
         String ANumber = input.next();
-        if (sqlConnection.checkANumber(ANumber, choose)) {
+        if (sqlConnection.checkANumber(ANumber, type)) {
             System.out.println("How much money do you want to withdraw?");
             int money = input.nextInt();
-            if (money <= sqlConnection.findBalance(ANumber, choose)) {
-                switch (choose) {
+            if (money <= sqlConnection.findBalance(ANumber, type)) {
+                switch (type) {
                     case 1:
                         popMoneyForCA(ANumber,money);
                         break;
@@ -261,10 +273,84 @@ public class BankSystem implements Login {
         }else System.out.println("ERROR : in transfer money to wallet ");
     }
 
+    //------------------------------------------------------------------------------------------------
 
 
-    private void getBankCard() {
+    private void getBankCard() throws SQLException {
 
+        System.out.println("inter your account number:");
+        String ANumber = input.next();
+        if (sqlConnection.checkANumber(ANumber, type)) {
+           if (! checkGetBK(ANumber,type)){
+               switch (type){
+                   case 1: GBCForCA(ANumber);
+                   break;
+                   case 2: GBCForGHA(ANumber);
+                   break;
+                   case 3: GBCForSA(ANumber);
+               }
+           }else System.out.println("you already get bank card ");
+        } else
+            System.out.println("wrong account number :(");
+    }
+
+    private void GBCForCA(String ANumber){
+        String SQLCmd = String.format("UPDATE CAccount SET bankCard = %d WHERE ANumber = '%s'",0,ANumber);
+        if(sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("bank card is given");
+        }else System.out.println("ERROR : in get bank card");
+    }
+
+    private void GBCForGHA(String ANumber){
+        String SQLCmd = String.format("UPDATE GHAccount SET bankCard = %d WHERE ANumber = '%s'",0,ANumber);
+        if(sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("bank card is given");
+        }else System.out.println("ERROR : in get bank card");
+    }
+
+    private void GBCForSA(String ANumber){
+        String SQLCmd = String.format("UPDATE SAccount SET bankCard = %d WHERE ANumber = '%s'",0,ANumber);
+        if(sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("bank card is given");
+        }else System.out.println("ERROR : in get bank card");
+    }
+
+    private boolean checkGetBK(String ANumber,int type) throws SQLException {
+        boolean check=false;
+        if (type==1){
+            String SQLCmd = String.format("SELECT bankCard FROM CAccount WHERE ANumber = '%s'",ANumber);
+            ResultSet rs = sqlConnection.SQLLoad(SQLCmd);
+            while (rs.next()){
+                if (rs.getInt("bankCard")==0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+
+        if (type==2){
+            String SQLCmd = String.format("SELECT bankCard FROM GHAccount WHERE ANumber = '%s'",ANumber);
+            ResultSet rs = sqlConnection.SQLLoad(SQLCmd);
+            while (rs.next()){
+                if (rs.getInt("bankCard")==0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+
+        if (type==3){
+            String SQLCmd = String.format("SELECT bankCard FROM SAccount WHERE ANumber = '%s'",ANumber);
+            ResultSet rs = sqlConnection.SQLLoad(SQLCmd);
+            while (rs.next()){
+                if (rs.getInt("bankCard")==0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+
+        return check;
     }
 
     private void getBathOfCheck() {
