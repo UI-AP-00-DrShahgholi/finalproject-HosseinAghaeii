@@ -83,12 +83,25 @@ public class SQLConnection {
         return check;
     }
 
-    public boolean checkDNA(String accountNumber, String ownerNCode) throws SQLException {
+    public boolean checkDAN(String accountNumber, String ownerNCode) throws SQLException {
         boolean check=false;
         String a = String.format("SELECT DAN FROM Bcheck WHERE ownerNCode = '%s'", ownerNCode);
         ResultSet rs1 = SQLLoad(a);
         while (rs1.next()) {
             if (rs1.getString("DAN").equals(accountNumber)) {
+                check = true;
+                break;
+            }
+        }
+        return check;
+    }
+
+    public boolean checkGAN(String accountNumber, String ownerNCode) throws SQLException {
+        boolean check=false;
+        String a = String.format("SELECT GAN FROM Bcheck WHERE ownerNCode = '%s'", ownerNCode);
+        ResultSet rs1 = SQLLoad(a);
+        while (rs1.next()) {
+            if (rs1.getString("GAN").equals(accountNumber)) {
                 check = true;
                 break;
             }

@@ -148,6 +148,43 @@ public class BankSystem implements Login {
         if (sqlConnection.executeSQL(SQLCmd)){
             System.out.println("check is given");
         }else System.out.println("Error in give check");
+    }
+
+    private void passCheck() throws SQLException {
+        System.out.println("inter your account number");
+        String GAN=input.next();
+        if (! sqlConnection.checkGAN(GAN,nationalCode)){
+            System.out.println("wrong account number");
+            return;
+        }
+        String DAN ="";
+        int value=0;
+        String a=String.format("SELECT DAN , value FROM Bcheck WHERE GAN = '%s'",GAN);
+        ResultSet rs= sqlConnection.SQLLoad(a);
+        while (rs.next()){
+            DAN=rs.getString("DAN");
+            value=rs.getInt("value");
+        }
+       int dBalance= sqlConnection.findBalance(DAN,1);
+        if (dBalance<value){
+            System.out.println("person who give you check dont have enough money!");
+            return;
+        }
+        int DB=sqlConnection.findBalance(DAN,1)-value;
+        int GB=sqlConnection.findBalance(GAN,1)+value;
+        String SQLCmd1 = String.format("UPDATE CAccount SET balance = %d WHERE ANumber = '%s'",DB,DAN);
+        String SQLCmd2 = String.format("UPDATE CAccount SET balance = %d WHERE ANumber = '%s'",GB,GAN);
+        if (sqlConnection.executeSQL(SQLCmd1)){
+            System.out.println("given account update");
+        }else System.out.println("ERROR : given account dont update");
+        if (sqlConnection.executeSQL(SQLCmd2)){
+            System.out.println("getter account update");
+        }else System.out.println("ERROR : getter account dont update");
+        String SQLCmd3=String.format("DELETE FROM Bcheck WHERE DAN = '%s' AND GAN = '%s'",DAN,GAN);
+        if (sqlConnection.executeSQL(SQLCmd3)){
+            System.out.println("check is delete");
+        }else
+        System.out.println("ERROR in delete check");
 
 
     }
@@ -535,9 +572,7 @@ public class BankSystem implements Login {
 
     //--------------------------------------------------------------------------------------------
 
-    private void passCheck() {
 
-    }
     //---------------------------------------------------------------------------------------------------
     private void transferMoney() throws SQLException {
         System.out.println("inter your  origin account number:");
