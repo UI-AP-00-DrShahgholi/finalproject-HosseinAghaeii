@@ -1,5 +1,6 @@
 package com.company;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -23,7 +24,7 @@ public class BankSystem implements Login {
         } else System.out.println("we not have person with this national code");
     }
 
-    private void menu() {
+    private void menu() throws SQLException {
         System.out.println("What do you want to do?");
         System.out.println("1.Create account ");
         System.out.println("2.Push money");//واریز وجه
@@ -137,8 +138,56 @@ public class BankSystem implements Login {
         }else System.out.println("ERROR!");
     }
 
-    private void pushMoney() {
+    private void pushMoney() throws SQLException {
+        System.out.println("inter type of account:");
+        System.out.println("1.current account");
+        System.out.println("2.GHARZOLHASANE account");
+        System.out.println("3.saving account");
+        int choose=input.nextInt();
+        System.out.println("inter your account number:");
+        String ANumber=input.next();
+        if (sqlConnection.checkANumber(ANumber,choose)) {
+            System.out.println("How much money do you want to deposit?");
+            int money=input.nextInt();
 
+            switch (choose) {
+                case 1:
+                    pushMoneyForCA(ANumber,money);
+                    break;
+                case 2:
+                    pushMoneyForGHA(ANumber,money);
+                    break;
+                case 3:
+                    pushMoneyForSA(ANumber,money);
+                    break;
+            }
+        }else
+            System.out.println("wrong account number :(");
+
+    }
+
+    private void pushMoneyForCA(String ANumber,int money) throws SQLException {
+        int balance= sqlConnection.findBalance(ANumber,1)+money;
+        String SQLCmd=String.format("UPDATE CAccount SET balance = %d WHERE ANumber = '%s'",balance,ANumber);
+        if (sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("push money is complete");
+        }else System.out.println("ERROR : push money is not complete");
+    }
+
+    private void pushMoneyForGHA(String ANumber,int money) throws SQLException {
+        int balance= sqlConnection.findBalance(ANumber,2)+money;
+        String SQLCmd=String.format("UPDATE GHAccount SET balance = %d WHERE ANumber = '%s'",balance,ANumber);
+        if (sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("push money is complete");
+        }else System.out.println("ERROR : push money is not complete");
+    }
+
+    private void pushMoneyForSA(String ANumber,int money) throws SQLException {
+        int balance= sqlConnection.findBalance(ANumber,3)+money;
+        String SQLCmd=String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'",balance,ANumber);
+        if (sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("push money is complete");
+        }else System.out.println("ERROR : push money is not complete");
     }
 
     private void popMoney() {

@@ -45,6 +45,39 @@ public class SQLConnection {
         return check;
     }
 
+    public boolean checkANumber(String accountNumber,int type)throws SQLException{
+        boolean check=false;
+        if(type==1){
+        ResultSet rs1= SQLLoad("SELECT ANUmber FROM CAccount");
+            while (rs1.next()){
+                if (rs1.getString("ANumber").equals(accountNumber)){
+                    check=true;
+                    break;
+                }
+            }
+        }
+        if(type==2){
+        ResultSet rs2= SQLLoad("SELECT ANUmber FROM GHAccount");
+            while (rs2.next()){
+                if (rs2.getString("ANumber").equals(accountNumber)){
+                    check=true;
+                    break;
+                }
+            }
+        }
+        if(type==3){
+        ResultSet rs3= SQLLoad("SELECT ANUmber FROM SAccount");
+            while (rs3.next()){
+                if (rs3.getString("ANumber").equals(accountNumber)){
+                    check=true;
+                    break;
+                }
+            }
+
+        }
+        return check;
+    }
+
     public boolean checkNCodeAndSACode(String nationalCode,String SACode) throws SQLException{
         boolean check=false;
         ResultSet rs=SQLLoad("SELECT ownerNCode , SACode FROM Estate ");
@@ -65,5 +98,31 @@ public class SQLConnection {
             name = rs.getString("name");
         }
         return name;
+    }
+
+    public int findBalance(String ANumber,int type) throws SQLException{
+        int balance=0;
+        if (type==1) {
+            String SQlCmd = String.format("SELECT balance FROM CAccount WHERE ANumber = %s", ANumber);
+            ResultSet rs = SQLLoad(SQlCmd);
+            while (rs.next()) {
+                balance = rs.getInt("balance");
+            }
+        }
+        if (type==2) {
+            String SQlCmd = String.format("SELECT balance FROM GHAccount WHERE ANumber = %s", ANumber);
+            ResultSet rs = SQLLoad(SQlCmd);
+            while (rs.next()) {
+                balance = rs.getInt("balance");
+            }
+        }
+        if (type==3) {
+            String SQlCmd = String.format("SELECT balance FROM SAccount WHERE ANumber = %s", ANumber);
+            ResultSet rs = SQLLoad(SQlCmd);
+            while (rs.next()) {
+                balance = rs.getInt("balance");
+            }
+        }
+        return balance;
     }
 }
