@@ -222,52 +222,66 @@ public class BankSystem implements Login {
     }
     //----------------------------------------------------------------------------------------------
 
-    private void pushMoney() throws SQLException {
+    private void pushMoney() throws Exception {
 
         System.out.println("inter your account number:");
         String ANumber = input.next();
         if (sqlConnection.checkANumber(ANumber, type)) {
             System.out.println("How much money do you want to deposit?");
             int money = input.nextInt();
+            System.out.println(sqlConnection.getWallet(nationalCode));
+            if (sqlConnection.getWallet(nationalCode)>=money) {
 
-            switch (type) {
-                case 1:
-                    pushMoneyForCA(ANumber, money);
-                    break;
-                case 2:
-                    pushMoneyForGHA(ANumber, money);
-                    break;
-                case 3:
-                    pushMoneyForSA(ANumber, money);
-                    break;
-            }
+                switch (type) {
+                    case 1:
+                        pushMoneyForCA(ANumber, money);
+                        break;
+                    case 2:
+                        pushMoneyForGHA(ANumber, money);
+                        break;
+                    case 3:
+                        pushMoneyForSA(ANumber, money);
+                        break;
+                }
+            }else System.out.println("you are not have this amount in your wallet !");
         } else
             System.out.println("wrong account number :(");
 
     }
 
-    private void pushMoneyForCA(String ANumber, int money) throws SQLException {
+    private void pushMoneyForCA(String ANumber, int money) throws Exception {
         int balance = sqlConnection.findBalance(ANumber, 1) + money;
         String SQLCmd = String.format("UPDATE CAccount SET balance = %d WHERE ANumber = '%s'", balance, ANumber);
         if (sqlConnection.executeSQL(SQLCmd)) {
+            popToWallet(money);
             System.out.println("push money is complete");
         } else System.out.println("ERROR : push money is not complete");
     }
 
-    private void pushMoneyForGHA(String ANumber, int money) throws SQLException {
+    private void pushMoneyForGHA(String ANumber, int money) throws Exception {
         int balance = sqlConnection.findBalance(ANumber, 2) + money;
         String SQLCmd = String.format("UPDATE GHAccount SET balance = %d WHERE ANumber = '%s'", balance, ANumber);
         if (sqlConnection.executeSQL(SQLCmd)) {
+            popToWallet(money);
             System.out.println("push money is complete");
         } else System.out.println("ERROR : push money is not complete");
     }
 
-    private void pushMoneyForSA(String ANumber, int money) throws SQLException {
+    private void pushMoneyForSA(String ANumber, int money) throws Exception {
         int balance = sqlConnection.findBalance(ANumber, 3) + money;
         String SQLCmd = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", balance, ANumber);
         if (sqlConnection.executeSQL(SQLCmd)) {
+            popToWallet(money);
             System.out.println("push money is complete");
         } else System.out.println("ERROR : push money is not complete");
+    }
+
+    private void popToWallet(int money) throws Exception {
+        int walletMount=sqlConnection.getWallet(nationalCode)-money;
+        String SQLCmd =String.format("UPDATE User SET walletMount = %d WHERE nationalCode = '%s'",walletMount,nationalCode);
+        if (sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("wallet mount update");
+        }else System.out.println("ERROR : in transfer money to wallet ");
     }
     //------------------------------------------------------------------------------------------------
 
@@ -495,8 +509,9 @@ public class BankSystem implements Login {
     private void passCheck() {
 
     }
-
+    //---------------------------------------------------------------------------------------------------
     private void transferMoney() {
-
+        System.out.println("inter your account number:");
+        String ANumber = input.next();
     }
 }
