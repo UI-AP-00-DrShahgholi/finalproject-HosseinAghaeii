@@ -510,8 +510,81 @@ public class BankSystem implements Login {
 
     }
     //---------------------------------------------------------------------------------------------------
-    private void transferMoney() {
-        System.out.println("inter your account number:");
-        String ANumber = input.next();
+    private void transferMoney() throws SQLException {
+        System.out.println("inter your  origin account number:");
+        String OANumber = input.next();
+        if (! sqlConnection.checkANumber(OANumber,type)){
+            System.out.println("Wrong account number");
+            return;
+        }
+
+        System.out.println("inter money you want to transfer:");
+        int money=input.nextInt();
+        if (sqlConnection.findBalance(OANumber,type)<money){
+            System.out.println("origin account not have enough money!");
+            return;
+        }
+
+        System.out.println("remember you just can transfer money on same type account :)");
+        System.out.println("inter your  target account number:");
+        String TANumber = input.next();
+        if (! sqlConnection.checkANumber(TANumber,type)){
+            System.out.println("Wrong account number");
+            return;
+        }
+
+        switch (type){
+            case 1: TMForCA(OANumber,TANumber,money);
+            break;
+            case 2: TMForGHA(OANumber,TANumber,money);
+            break;
+            case 3: TMForSA(OANumber,TANumber,money);
+            break;
+        }
+
+
+
+
+
+    }
+
+    private void TMForCA(String OANumber,String TANumber,int money) throws SQLException {
+        int oBalance= sqlConnection.findBalance(OANumber,type)-money;
+        String SQLCmd1=String.format("UPDATE CAccount SET balance = %d WHERE ANumber = '%s'",oBalance,OANumber);
+        if (sqlConnection.executeSQL(SQLCmd1)){
+            System.out.println("origin balance account update");
+        }else System.out.println("ERROR : origin balance account not update");
+        int tBalance= sqlConnection.findBalance(TANumber,type)+money;
+        String SQLCmd2=String.format("UPDATE CAccount SET balance = %d WHERE ANumber = '%s'",tBalance,TANumber);
+        if (sqlConnection.executeSQL(SQLCmd2)){
+            System.out.println("target balance account update");
+        }else System.out.println("ERROR : target balance account not update");
+
+    }
+
+    private void TMForGHA(String OANumber,String TANumber,int money) throws SQLException {
+        int oBalance= sqlConnection.findBalance(OANumber,type)-money;
+        String SQLCmd1=String.format("UPDATE GHAccount SET balance = %d WHERE ANumber = '%s'",oBalance,OANumber);
+        if (sqlConnection.executeSQL(SQLCmd1)){
+            System.out.println("origin balance account update");
+        }else System.out.println("ERROR : origin balance account not update");
+        int tBalance= sqlConnection.findBalance(TANumber,type)+money;
+        String SQLCmd2=String.format("UPDATE GHAccount SET balance = %d WHERE ANumber = '%s'",tBalance,TANumber);
+        if (sqlConnection.executeSQL(SQLCmd2)){
+            System.out.println("target balance account update");
+        }else System.out.println("ERROR : target balance account not update");
+    }
+
+    private void TMForSA(String OANumber,String TANumber,int money) throws SQLException {
+        int oBalance= sqlConnection.findBalance(OANumber,type)-money;
+        String SQLCmd1=String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'",oBalance,OANumber);
+        if (sqlConnection.executeSQL(SQLCmd1)){
+            System.out.println("origin balance account update");
+        }else System.out.println("ERROR : origin balance account not update");
+        int tBalance= sqlConnection.findBalance(TANumber,type)+money;
+        String SQLCmd2=String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'",tBalance,TANumber);
+        if (sqlConnection.executeSQL(SQLCmd2)){
+            System.out.println("target balance account update");
+        }else System.out.println("ERROR : target balance account not update");
     }
 }
