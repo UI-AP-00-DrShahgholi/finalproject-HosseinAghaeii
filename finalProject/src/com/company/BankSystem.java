@@ -23,6 +23,14 @@ public class BankSystem implements Login {
             System.out.println("Welcome dear " + name + ":)");
             nationalCode = NCode;
             chooseTypeOfAccount();
+            switch (type){
+                case  1: CAMenu();
+                break;
+                case 2: GHAMenu();
+                break;
+                case 3: SAMenu();
+                break;
+            }
         } else System.out.println("we not have person with this national code");
     }
 
@@ -37,45 +45,85 @@ public class BankSystem implements Login {
         else {
             if (choose >= 1 && choose <= 3) {
                 type = choose;
-                menu();
             } else System.out.println("Error");
         }
     }
 
-    private void menu() throws Exception {
+    private void CAMenu() throws Exception {
         System.out.println("What do you want to do?");
-        System.out.println("1.Create account ");
-        System.out.println("2.Push money");//واریز وجه
-        System.out.println("3.pop  money");//دریافت وجه
-        System.out.println("4.Get a bank card");
-        System.out.println("5.Get a batch of checks");
-        System.out.println("6.Pass the check");
-        System.out.println("7.transfer money");
+        System.out.println("1.Push money");//واریز وجه
+        System.out.println("2.pop  money");//دریافت وجه
+        System.out.println("3.Get a bank card");
+        System.out.println("4.Get a batch of checks");
+        System.out.println("5.Pass the check");
+        System.out.println("6.transfer money");
         int chooser = input.nextInt();
         switch (chooser) {
             case 1:
-                createAccount();
-                break;
-            case 2:
                 pushMoney();
                 break;
-            case 3:
+            case 2:
                 popMoney();
                 break;
-            case 4:
+            case 3:
                 getBankCard();
                 break;
-            case 5:
+            case 4:
                 getBathOfCheck();
                 break;
-            case 6:
+            case 5:
                 passCheck();
                 break;
-            case 7:
+            case 6:
                 transferMoney();
                 break;
         }
     }
+
+    private void GHAMenu() throws Exception {
+        System.out.println("What do you want to do?");
+        System.out.println("1.Push money");//واریز وجه
+        System.out.println("2.pop  money");//دریافت وجه
+        System.out.println("3.Get a bank card");
+        System.out.println("4.transfer money");
+        int chooser = input.nextInt();
+        switch (chooser) {
+            case 1:
+                pushMoney();
+                break;
+            case 2:
+                popMoney();
+                break;
+            case 3:
+                getBankCard();
+                break;
+            case 4:
+                transferMoney();
+                break;
+        }
+    }
+
+    private void SAMenu() throws Exception {
+        System.out.println("What do you want to do?");
+        System.out.println("1.Push money");//واریز وجه
+        System.out.println("2.pop  money");//دریافت وجه
+        System.out.println("3.transfer money");
+        int chooser = input.nextInt();
+        switch (chooser) {
+            case 1:
+                pushMoney();
+                break;
+            case 2:
+                popMoney();
+                break;
+            case 3:
+                transferMoney();
+                break;
+        }
+    }
+
+
+    //--------------------------------------------------------------------------------------------
 
     private void createAccount() {
         System.out.println("which type of account do yuo want to crate?");
@@ -353,9 +401,85 @@ public class BankSystem implements Login {
         return check;
     }
 
-    private void getBathOfCheck() {
+    //------------------------------------------------------------------------------------------------------
 
+    private void getBathOfCheck() throws SQLException {
+        System.out.println("inter your account number:");
+        String ANumber = input.next();
+        if (sqlConnection.checkANumber(ANumber, type)) {
+            if (! checkGetCHB(ANumber,type)){
+                switch (type){
+                    case 1: GChBForCA(ANumber);
+                        break;
+                    case 2: GChBForGHA(ANumber);
+                        break;
+                    case 3: GChBForSA(ANumber);
+                }
+            }else System.out.println("you already get check book ");
+        } else
+            System.out.println("wrong account number :(");
     }
+
+    private void GChBForCA(String ANumber){
+        String SQLCmd = String.format("UPDATE CAccount SET checkBook = %d WHERE ANumber = '%s'",0,ANumber);
+        if(sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("check book is given");
+        }else System.out.println("ERROR : in get check book");
+    }
+
+    private void GChBForGHA(String ANumber){
+        String SQLCmd = String.format("UPDATE GHAccount SET checkBook = %d WHERE ANumber = '%s'",0,ANumber);
+        if(sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("check book is given");
+        }else System.out.println("ERROR : in get check book");
+    }
+
+    private void GChBForSA(String ANumber){
+        String SQLCmd = String.format("UPDATE SAccount SET checkBook = %d WHERE ANumber = '%s'",0,ANumber);
+        if(sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("check book is given");
+        }else System.out.println("ERROR : in get check book");
+    }
+
+    private boolean checkGetCHB(String ANumber,int type) throws SQLException {
+        boolean check=false;
+        if (type==1){
+            String SQLCmd = String.format("SELECT checkBook FROM CAccount WHERE ANumber = '%s'",ANumber);
+            ResultSet rs = sqlConnection.SQLLoad(SQLCmd);
+            while (rs.next()){
+                if (rs.getInt("checkBook")==0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+
+        if (type==2){
+            String SQLCmd = String.format("SELECT checkBook FROM GHAccount WHERE ANumber = '%s'",ANumber);
+            ResultSet rs = sqlConnection.SQLLoad(SQLCmd);
+            while (rs.next()){
+                if (rs.getInt("checkBook")==0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+
+        if (type==3){
+            String SQLCmd = String.format("SELECT checkBook FROM SAccount WHERE ANumber = '%s'",ANumber);
+            ResultSet rs = sqlConnection.SQLLoad(SQLCmd);
+            while (rs.next()){
+                if (rs.getInt("checkBook")==0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+
+        return check;
+    }
+
+    //--------------------------------------------------------------------------------------------
 
     private void passCheck() {
 
