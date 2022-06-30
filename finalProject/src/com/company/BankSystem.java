@@ -57,6 +57,7 @@ public class BankSystem implements Login {
         System.out.println("4.Get a batch of checks");
         System.out.println("5.Pass the check");
         System.out.println("6.transfer money");
+        System.out.println("7.give check");
         int chooser = input.nextInt();
         switch (chooser) {
             case 1:
@@ -77,6 +78,8 @@ public class BankSystem implements Login {
             case 6:
                 transferMoney();
                 break;
+            case 7: giveCheck();
+            break;
         }
     }
 
@@ -121,7 +124,33 @@ public class BankSystem implements Login {
                 break;
         }
     }
+    //--------------------------------------------------------------------------------------------
+    private void giveCheck() throws SQLException {
+        System.out.println("inter your account number:");
+        String DANumber = input.next();
+        if (! sqlConnection.checkANumber(DANumber,1,nationalCode)){
+            System.out.println("Wrong account number");
+            return;
+        }
 
+        System.out.println("for who want to give check?inter account number and national code");
+        String GANumber = input.next();
+        String ownerNCode=input.next();
+
+        if (! sqlConnection.checkANumber(GANumber,1,ownerNCode)){
+            System.out.println("Wrong account number");
+            return;
+        }
+        System.out.println("inter value of check");
+        int value=input.nextInt();
+
+        String SQLCmd=String.format("INSERT INTO Bcheck (DAN,ownerNCode,GAN,value) VALUES ('%s','%s','%s',%d)",DANumber,nationalCode,GANumber,value);
+        if (sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("check is given");
+        }else System.out.println("Error in give check");
+
+
+    }
 
     //--------------------------------------------------------------------------------------------
 
@@ -226,7 +255,7 @@ public class BankSystem implements Login {
 
         System.out.println("inter your account number:");
         String ANumber = input.next();
-        if (sqlConnection.checkANumber(ANumber, type)) {
+        if (sqlConnection.checkANumber(ANumber, type,nationalCode)) {
             System.out.println("How much money do you want to deposit?");
             int money = input.nextInt();
             System.out.println(sqlConnection.getWallet(nationalCode));
@@ -289,7 +318,7 @@ public class BankSystem implements Login {
 
         System.out.println("inter your account number:");
         String ANumber = input.next();
-        if (sqlConnection.checkANumber(ANumber, type)) {
+        if (sqlConnection.checkANumber(ANumber, type,nationalCode)) {
             System.out.println("How much money do you want to withdraw?");
             int money = input.nextInt();
             if (money <= sqlConnection.findBalance(ANumber, type)) {
@@ -353,7 +382,7 @@ public class BankSystem implements Login {
 
         System.out.println("inter your account number:");
         String ANumber = input.next();
-        if (sqlConnection.checkANumber(ANumber, type)) {
+        if (sqlConnection.checkANumber(ANumber, type,nationalCode)) {
            if (! checkGetBK(ANumber,type)){
                switch (type){
                    case 1: GBCForCA(ANumber);
@@ -431,7 +460,7 @@ public class BankSystem implements Login {
     private void getBathOfCheck() throws SQLException {
         System.out.println("inter your account number:");
         String ANumber = input.next();
-        if (sqlConnection.checkANumber(ANumber, type)) {
+        if (sqlConnection.checkANumber(ANumber, type,nationalCode)) {
             if (! checkGetCHB(ANumber,type)){
                 switch (type){
                     case 1: GChBForCA(ANumber);
@@ -513,7 +542,7 @@ public class BankSystem implements Login {
     private void transferMoney() throws SQLException {
         System.out.println("inter your  origin account number:");
         String OANumber = input.next();
-        if (! sqlConnection.checkANumber(OANumber,type)){
+        if (! sqlConnection.checkANumber(OANumber,type,nationalCode)){
             System.out.println("Wrong account number");
             return;
         }
@@ -528,7 +557,9 @@ public class BankSystem implements Login {
         System.out.println("remember you just can transfer money on same type account :)");
         System.out.println("inter your  target account number:");
         String TANumber = input.next();
-        if (! sqlConnection.checkANumber(TANumber,type)){
+        System.out.println("inter national code of person who want to transfer money");
+        String TNationalCode=input.next();
+        if (! sqlConnection.checkANumber(TANumber,type,TNationalCode)){
             System.out.println("Wrong account number");
             return;
         }
