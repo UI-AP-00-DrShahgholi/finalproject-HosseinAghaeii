@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 
-public class Main {
+public class Main implements Lists{
 
     public static void main(String[] args) throws Exception {
 
@@ -16,6 +16,11 @@ public class Main {
         int continueChooser;
         System.out.println("Welcome");
         do {
+            System.out.println("Do you want increment day?\t1.yes\t2.NO");
+            int iChooser=input.nextInt();
+            if (iChooser==1){
+               myDate.incrementDay();
+            }
 
             System.out.println("who are you?1.Admin\t2.User");
             int chooser = input.nextInt();

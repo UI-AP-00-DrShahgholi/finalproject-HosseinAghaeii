@@ -59,6 +59,7 @@ public class BankSystem implements Login {
         System.out.println("5.Pass the check");
         System.out.println("6.transfer money");
         System.out.println("7.give check");
+        System.out.println("8.get vam");
         int chooser = input.nextInt();
         switch (chooser) {
             case 1:
@@ -81,6 +82,8 @@ public class BankSystem implements Login {
                 break;
             case 7: giveCheck();
             break;
+            case 8: getVam();
+            break;
         }
     }
 
@@ -90,6 +93,7 @@ public class BankSystem implements Login {
         System.out.println("2.pop  money");//دریافت وجه
         System.out.println("3.Get a bank card");
         System.out.println("4.transfer money");
+        System.out.println("5.get vam");
         int chooser = input.nextInt();
         switch (chooser) {
             case 1:
@@ -104,6 +108,9 @@ public class BankSystem implements Login {
             case 4:
                 transferMoney();
                 break;
+            case 5:
+                getVam();
+                break;
         }
     }
 
@@ -112,6 +119,7 @@ public class BankSystem implements Login {
         System.out.println("1.Push money");//واریز وجه
         System.out.println("2.pop  money");//دریافت وجه
         System.out.println("3.transfer money");
+        System.out.println("4.get vam");
         int chooser = input.nextInt();
         switch (chooser) {
             case 1:
@@ -123,7 +131,45 @@ public class BankSystem implements Login {
             case 3:
                 transferMoney();
                 break;
+            case 4:
+                getVam();
+                break;
         }
+    }
+    //--------------------------------------------------------------------------------------------
+    private void getVam() throws SQLException {
+        System.out.println("inter your account number:");
+        String ANumber = input.next();
+        if (! sqlConnection.checkANumber(ANumber,type,nationalCode)){
+            System.out.println("Wrong account number");
+            return;
+        }
+        System.out.println("What is the loan amount?");
+        int value=input.nextInt();
+        if (value<0){
+            System.out.println(" :/ ");
+            return;
+        }
+        int GHN=0;
+        int percent=0;
+        System.out.println("choose one of this options:");
+        System.out.println("1.vam with 6GH and 10 interest percent ");
+        System.out.println("2.vam with 12GH and 20 interest percent ");
+        int chooser=input.nextInt();
+        switch (chooser){
+            case 1:{GHN=6; percent=10;}
+            break;
+            case 2:{GHN=12; percent=20;}
+            break;
+        }
+        if (chooser!=1 && chooser!=2) {
+            System.out.println(" :/");
+            return;
+        }
+        String SQLCmd = String.format("INSERT INTO vam (ANumber,percent,value,GHN) VALUE ('%s',%d,%d,%d)",ANumber,percent,value,GHN);
+        if (sqlConnection.executeSQL(SQLCmd)){
+            System.out.println("vam successfully added");
+        }else System.out.println("ERROR in add vam");
     }
     //--------------------------------------------------------------------------------------------
     private void giveCheck() throws SQLException {
@@ -398,6 +444,7 @@ public class BankSystem implements Login {
 
     private void popMoneyForSA(String ANumber, int money) throws Exception {
         Date newDate = new Date();
+        //newDate.setDate(newDate.getDate()+11);
         Date date;
         date = sqlConnection.findBuildDate(ANumber);
         int period = sqlConnection.findPeriod(ANumber);
@@ -416,10 +463,10 @@ public class BankSystem implements Login {
     private void addInterest(String ANumber) throws SQLException {
         int interest = sqlConnection.findInterest(ANumber);
         int balance = sqlConnection.findBalance(ANumber,3);
-        int newBalance = balance + (interest * balance);
+        int newBalance = balance + ((interest/100) * balance);
         String SQLCmd1 = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", newBalance, ANumber);
         if (sqlConnection.executeSQL(SQLCmd1)) {
-            System.out.println("HOORAY! interest of balance added to your balance.\t interest = " + (interest * balance));
+            System.out.println("HOORAY! interest of balance added to your balance.\t interest = " + ((interest/100) * balance));
         } else System.out.println("ERROR : in add interest");
 
     }
