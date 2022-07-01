@@ -9,6 +9,7 @@ public class Main {
           MYDate myDate=new MYDate();
         Scanner input = new Scanner(System.in);
         SabtAhval sabtAhval = new SabtAhval();
+        SQLConnection sqlConnection=new SQLConnection();
 
         int continueChooser;
         System.out.println("Welcome");
@@ -16,7 +17,13 @@ public class Main {
             System.out.println("Do you want increment day?\t1.yes\t2.NO");
             int iChooser=input.nextInt();
             if (iChooser==1){
-               myDate.incrementDay();
+                System.out.println("inter saving bank account number for check interest");
+                String ANumber =input.next();
+                System.out.println("inter national code");
+                String nCode=input.next();
+                if (sqlConnection.checkANumber(ANumber,3,nCode)) {
+                    myDate.incrementDay(ANumber);
+                }else System.out.println("wrong information");
             }
 
             System.out.println("who are you?1.Admin\t2.User");

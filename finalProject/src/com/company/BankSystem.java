@@ -519,15 +519,9 @@ public class BankSystem implements Login {
     }
 
     private void popMoneyForSA(String ANumber, int money) throws Exception {
-        Date newDate = new Date();
-        //newDate.setDate(newDate.getDate()+11);
-        Date date;
-        date = sqlConnection.findBuildDate(ANumber);
-        int period = sqlConnection.findPeriod(ANumber);
 
-        if (newDate.getDate() - date.getDate() >= period) {
-            addInterest(ANumber);
-        } else System.out.println("interest dont add to balance  ");
+
+
         int balance = sqlConnection.findBalance(ANumber, 3) - money;
         pushToWallet(money);
         String SQLCmd1 = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", balance, ANumber);
@@ -536,16 +530,7 @@ public class BankSystem implements Login {
         } else System.out.println("ERROR : pup money is not complete");
     }
 
-    private void addInterest(String ANumber) throws SQLException {
-        int interest = sqlConnection.findInterest(ANumber);
-        int balance = sqlConnection.findBalance(ANumber, 3);
-        int newBalance = balance + ((interest / 100) * balance);
-        String SQLCmd1 = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", newBalance, ANumber);
-        if (sqlConnection.executeSQL(SQLCmd1)) {
-            System.out.println("HOORAY! interest of balance added to your balance.\t interest = " + ((interest / 100) * balance));
-        } else System.out.println("ERROR : in add interest");
 
-    }
 
 
     private void pushToWallet(int money) throws Exception {
@@ -803,4 +788,5 @@ public class BankSystem implements Login {
             System.out.println("target balance account update");
         } else System.out.println("ERROR : target balance account not update");
     }
+
 }
