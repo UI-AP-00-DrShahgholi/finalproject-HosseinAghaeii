@@ -22,6 +22,21 @@ public class SQLConnection {
 
         } catch (Exception ex) {
             result = false;
+
+        }
+        return result;
+    }
+
+    public boolean executeSQLE(String SQlCmd) throws SQLException {
+        boolean result;
+        try {
+            Statement s = con.prepareStatement(SQlCmd);
+            s.execute(SQlCmd);
+            result = true;
+
+        } catch (Exception ex) {
+            result = false;
+             throw ex;
         }
         return result;
     }
@@ -210,6 +225,37 @@ public class SQLConnection {
         }
         return interest;
     }
+
+    public int findNPoint(String ANumber) throws SQLException{
+        int NPoint = 0;
+
+            String SQlCmd = String.format("SELECT NPoint FROM CAccount WHERE ANumber = %s", ANumber);
+            ResultSet rs = SQLLoad(SQlCmd);
+            while (rs.next()) {
+                NPoint = rs.getInt("NPoint");
+            }
+
+
+            String SQlCmd1 = String.format("SELECT NPoint FROM GHAccount WHERE ANumber = %s", ANumber);
+            ResultSet rs1 = SQLLoad(SQlCmd1);
+            while (rs1.next()) {
+                NPoint = rs1.getInt("NPoint");
+            }
+
+
+            String SQlCmd2 = String.format("SELECT NPoint FROM SAccount WHERE ANumber = %s", ANumber);
+            ResultSet rs2 = SQLLoad(SQlCmd2);
+            while (rs2.next()) {
+                NPoint = rs2.getInt("NPoint");
+            }
+
+        return NPoint;
+    }
+
+
+
+
+
 
 
 }
