@@ -2,6 +2,7 @@ package com.company;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -249,13 +250,15 @@ public class BankSystem implements Login {
     }
 
     private void createSAccount() throws TypeInvalidException {
+        Date date=new Date();
+        SimpleDateFormat x = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = x.format(date);
         System.out.println("inter information we want:");
-        System.out.println("account number, balance, build date");
+        System.out.println("account number, balance");
         System.out.println("notice! account number and card number must be unique");
         String ANumber = input.next();
         int balance = input.nextInt();
-
-        String buildDate = input.next();
+        String buildDate = currentTime;
         System.out.println("inter type of saving account:");
         System.out.println("1.SPECIAL");
         System.out.println("2.short term");
@@ -394,12 +397,31 @@ public class BankSystem implements Login {
     }
 
     private void popMoneyForSA(String ANumber, int money) throws Exception {
+        Date newDate = new Date();
+        Date date;
+        date = sqlConnection.findBuildDate(ANumber);
+        int period = sqlConnection.findPeriod(ANumber);
+
+        if (newDate.getDate()-date.getDate()>=period){
+           addInterest(ANumber);
+        }else System.out.println("interest dont add to balance  ");
         int balance = sqlConnection.findBalance(ANumber, 3) - money;
         pushToWallet(money);
-        String SQLCmd = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", balance, ANumber);
-        if (sqlConnection.executeSQL(SQLCmd)) {
+        String SQLCmd1 = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", balance, ANumber);
+        if (sqlConnection.executeSQL(SQLCmd1)) {
             System.out.println("pop money is complete");
         } else System.out.println("ERROR : pup money is not complete");
+    }
+
+    private void addInterest(String ANumber) throws SQLException {
+        int interest = sqlConnection.findInterest(ANumber);
+        int balance = sqlConnection.findBalance(ANumber,3);
+        int newBalance = balance + (interest * balance);
+        String SQLCmd1 = String.format("UPDATE SAccount SET balance = %d WHERE ANumber = '%s'", newBalance, ANumber);
+        if (sqlConnection.executeSQL(SQLCmd1)) {
+            System.out.println("HOORAY! interest of balance added to your balance.\t interest = " + (interest * balance));
+        } else System.out.println("ERROR : in add interest");
+
     }
 
 

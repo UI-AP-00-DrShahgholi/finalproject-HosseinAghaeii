@@ -1,6 +1,7 @@
 package com.company;
 
 import java.sql.*;
+import java.util.Date;
 
 public class SQLConnection {
     String URL = "jdbc:mysql://localhost/finalProject";
@@ -178,6 +179,36 @@ public class SQLConnection {
             value = rs.getInt("value");
         }
         return value;
+    }
+
+    public int findPeriod(String ANumber) throws SQLException {
+        int period=0;
+        String SQlCmd = String.format("SELECT period FROM SAccount WHERE ANumber = %s", ANumber);
+        ResultSet rs = SQLLoad(SQlCmd);
+        while (rs.next()) {
+            period = rs.getInt("period");
+        }
+        return period;
+    }
+
+    public Date findBuildDate(String ANumber) throws SQLException{
+        Date date=new Date();
+        String SQLCmd = String.format("SELECT buildDate FROM SAccount WHERE ANumber = '%s'",ANumber);
+        ResultSet rs = SQLLoad(SQLCmd);
+        while (rs.next()){
+            date = rs.getDate("buildDate");
+        }
+        return date;
+    }
+
+    public int findInterest(String ANumber) throws  SQLException{
+        int interest=0;
+        String SQlCmd = String.format("SELECT bankInterest FROM SAccount WHERE ANumber = %s", ANumber);
+        ResultSet rs = SQLLoad(SQlCmd);
+        while (rs.next()) {
+            interest = rs.getInt("bankInterest");
+        }
+        return interest;
     }
 
 
